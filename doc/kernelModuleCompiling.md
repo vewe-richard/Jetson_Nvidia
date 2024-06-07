@@ -72,15 +72,72 @@ Make the module
 make
 ```
 
+## Add module to image
+```
+docker exec -it ubuntu bash
+cd /root/build/Linux_for_Tegra/source/kernel/kernel-jammy-src/drivers/staging
+mkdir mymodule
+cd mymodule
+```
+Create mymod.c with below contents
+```
+#include <linux/init.h>
+#include <linux/module.h>
 
+static int __init hello_init(void) {
+    printk(KERN_INFO "Hello, Jetson! \n");
+    return 0;
+}
 
+static void __exit hello_exit(void) {
+    printk(KERN_INFO "Goodbye, Jetson! \n");
+}
 
+module_init(hello_init);
+module_exit(hello_exit);
 
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("test name");
+MODULE_DESCRIPTION("A simple test module");
 
-
-
-
-
-
-
+```
+Create Makefile with below contents
+```
+obj-$(CONFIG_MYMODULE) += mymod.o
+```
+Create Kconfig with below contents
+```
+config MYMODULE
+    tristate "my new modules"
+    default m
+```
+Add the below contents to the  `/root/build/Linux_for_Tegra/source/kernel/kernel-jammy-src/drivers/staging/Makefile` file
+```
+obj-$(CONFIG_MYMODULE)     += mymodule/
+```
+Add the below contents to the  `/root/build/Linux_for_Tegra/source/kernel/kernel-jammy-src/drivers/staging/Kconfig` file
+```
+source "drivers/staging/mymodule/Kconfig"
+```
+Check and generate a new.config file
+```
+apt-get install libncurses5-dev
+cd /root/build/Linux_for_Tegra/source/kernel/kernel-jammy-src/
+make menuconfig
+# goto Device Drivers -->
+       Staging drivers -->
+       you can see new module
+       save and exit
+```
+Build kernel
+```
+export CROSS_COMPILE=$HOME/l4t-gcc/aarch64--glibc--stable-2022.08-1/bin/aarch64-buildroot-linux-gnu-
+cd /root/build/Linux_for_Tegra/source
+make -C kernel
+```
+Check new module
+```
+# ls /root/build/Linux_for_Tegra/source/kernel/kernel-jammy-src/drivers/staging/mymodule/
+Kconfig  Makefile  modules.order  mymod.c  mymod.ko  mymod.mod  mymod.mod.c  mymod.mod.o  mymod.o
+```
 
