@@ -12,5 +12,3 @@ There are devices on the `i2c-0` bus `0x50` and `0x57`, but I've verified that n
 
 ### 3.How to operate
 I recommend using `i2cdetect-y *`(0-11) after inserting the camera to check whether new devices appear on all buses, and then unplug the camera to confirm
-
-I'm guessing it's on I2c buses 0 and 4
