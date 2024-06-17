@@ -111,3 +111,6 @@ Below is a print of the module
 When the driver loads successfully, we can see that `0x50` shows `UU`
 
 ![img_6.png](image%2Fimg_6.png)
+
+
+#### ps: next step(1.Write the device tree for the camera. 2.Modify the driver module to compile and register the camera as a v4l2 device)
